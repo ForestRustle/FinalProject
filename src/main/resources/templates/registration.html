@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Регистрация</title>
+</head>
+<body>
+<h3>Регистрация</h3>
+<form method="post" th:action="@{/auth/registration}" th:object="${person}">
+  <label for="login">Введите логин: </label>
+  <input type="text"  th:field="*{login}" placeholder="Введите пароль" name="username" id="login">
+  <div style="color: red" th:if="${#fields.hasErrors('login')}" th:errors="*{login}"></div>
+  <br>
+  <label for="password">Введите пароль: </label>
+  <input type="password" th:field="*{password}" placeholder="Введите пароль" name="password" id="password">
+  <div style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+  <br>
+  <label for="last_name">Введите фамилию: </label>
+  <input type="text" th:field="*{lastname}" id="last_name">
+  <div style="color: red" th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"></div>
+  <br>
+  <label for="first_name">Введите имя: </label>
+  <input type="text" th:field="*{firstname}" id="first_name">
+  <div style="color: red" th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}"></div>
+  <br>
+  <label for="patronymic">Введите отчество: </label>
+  <input type="text" th:field="*{patronymic}" id="patronymic">
+  <br>
+  <label for="birthday">Введите возраст: </label>
+  <input type="text" th:field="*{birthday}" placeholder="01.01.1900" id="birthday">
+  <div style="color: red" th:if="${#fields.hasErrors('birthday')}" th:errors="*{birthday}"></div>
+  <br>
+  <label for="email">Введите email: </label>
+  <input type="text" th:field="*{email}" id="email">
+  <div style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+  <br>
+  <label for="phone_number">Введите номер телефона: </label>
+  <input type="text" th:field="*{phoneNumber}" id="phone_number">
+  <div style="color: red" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
+  <br>
+  <input type="submit" value="Зарегистрироваться">
+</form>
+</body>
+</html>

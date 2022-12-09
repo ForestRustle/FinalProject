@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Информация о пользователе</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link th:href="@{/css/index.css}" type="text/css" rel="stylesheet">
+</head>
+<body>
+<form>
+    <input type="button" value="Вернуться к списку пользователей" onclick="history.back()">
+</form>
+<h3>Информация о пользователе</h3>
+<p th:text="'Логин: ' + ${person.getLogin()}"/>
+<p th:text="'Пароль: ' + ${person.getPassword()}"/>
+<p th:text="'Роль: ' + ${person.getRole()}"/>
+<p th:text="'Фамилия: ' + ${person.getLastname()}"/>
+<p th:text="'Имя: ' + ${person.getFirstname()}"/>
+<p th:text="'Отчество: ' + ${person.getPatronymic()}"/>
+<p th:text="'Дата рождения: ' + ${person.getBirthday()}"/>
+<p th:text="'Email: ' + ${person.getEmail()}"/>
+<p th:text="'Номер телефона: ' + ${person.getPhoneNumber()}"/>
+<a th:href="@{/admin/person/edit/{id}(id=${person.getId()})}">Редактировать пользователя</a>
+<a th:href="@{/admin/person/delete/{id}(id=${person.getId()})}">Удалить пользователя</a>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script th:src="@{/js/index.js}"></script>
+</body>
+</html>

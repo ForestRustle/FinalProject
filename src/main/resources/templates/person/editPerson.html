@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Редактирование пользователей</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link th:href="@{/css/index.css}" type="text/css" rel="stylesheet">
+</head>
+<body>
+<form>
+  <input type="button" value="Вернуться к списку пользователей" onclick="history.back()">
+</form>
+<h3>Редактирование пользователей</h3>
+<form method="POST" th:action="@{/admin/person/edit/{id}(id=${editPerson.getId()})}" th:object="${editPerson}">
+  <label for="login">Введите логин: </label>
+  <input type="text"  th:field="*{login}" placeholder="Введите пароль" name="username" id="login">
+  <div style="color: red" th:if="${#fields.hasErrors('login')}" th:errors="*{login}"></div>
+  <br>
+  <label for="password">Введите пароль: </label>
+  <input type="password" th:field="*{password}" placeholder="Введите пароль" name="password" id="password">
+  <div style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+  <br>
+  <label for="role">Введите роль: </label>
+  <input type="text" th:field="*{role}" placeholder="Введите роль" name="role" id="role">
+  <div style="color: red" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></div>
+  <br>
+  <label for="last_name">Введите фамилию: </label>
+  <input type="text" th:field="*{lastname}" id="last_name">
+  <div style="color: red" th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"></div>
+  <br>
+  <label for="first_name">Введите имя: </label>
+  <input type="text" th:field="*{firstname}" id="first_name">
+  <div style="color: red" th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}"></div>
+  <br>
+  <label for="patronymic">Введите отчество: </label>
+  <input type="text" th:field="*{patronymic}" id="patronymic">
+  <br>
+  <label for="birthday">Введите возраст: </label>
+  <input type="text" th:field="*{birthday}" placeholder="01.01.1900" id="birthday">
+  <div style="color: red" th:if="${#fields.hasErrors('birthday')}" th:errors="*{birthday}"></div>
+  <br>
+  <label for="email">Введите email: </label>
+  <input type="text" th:field="*{email}" id="email">
+  <div style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+  <br>
+  <label for="phone_number">Введите номер телефона: </label>
+  <input type="text" th:field="*{phoneNumber}" id="phone_number">
+  <div style="color: red" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
+  <br>
+  <input type="submit" value="Редактировать">
+</form>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script th:src="@{/js/index.js}"></script>
+</body>
+</html>
