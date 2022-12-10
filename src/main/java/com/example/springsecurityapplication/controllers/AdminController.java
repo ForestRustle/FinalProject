@@ -1,10 +1,11 @@
 package com.example.springsecurityapplication.controllers;
 
-import com.example.springsecurityapplication.models.Image;
-import com.example.springsecurityapplication.models.Person;
-import com.example.springsecurityapplication.models.Product;
+import com.example.springsecurityapplication.enumm.Status;
+import com.example.springsecurityapplication.models.*;
 import com.example.springsecurityapplication.repositories.CategoryRepository;
+import com.example.springsecurityapplication.repositories.OrderRepository;
 import com.example.springsecurityapplication.security.PersonDetails;
+import com.example.springsecurityapplication.services.OrderService;
 import com.example.springsecurityapplication.services.PersonService;
 import com.example.springsecurityapplication.services.ProductService;
 import com.example.springsecurityapplication.util.ProductValidator;
@@ -33,17 +34,20 @@ public class AdminController {
 
     private final ProductValidator productValidator;
     private final ProductService productService;
-
+    private final PersonService personService;
+    private final  OrderService orderService;
     private final CategoryRepository categoryRepository;
 
-    private final PersonService personService;
+    private final OrderRepository orderRepository;
 
     @Autowired
-    public AdminController(ProductValidator productValidator, ProductService productService, CategoryRepository categoryRepository, PersonService personService) {
+    public AdminController(ProductValidator productValidator, ProductService productService, PersonService personService, OrderService orderService, CategoryRepository categoryRepository, OrderRepository orderRepository) {
         this.productValidator = productValidator;
         this.productService = productService;
-        this.categoryRepository = categoryRepository;
         this.personService = personService;
+        this.orderService = orderService;
+        this.categoryRepository = categoryRepository;
+        this.orderRepository = orderRepository;
     }
 
     //    @PreAuthorize("hasRole('ROLE_ADMIN') and hasRole('')")
@@ -57,16 +61,15 @@ public class AdminController {
 
         String role = personDetails.getPerson().getRole();
 
-        if (role.equals("ROLE_USER")) {
+        if(role.equals("ROLE_USER")){
             return "redirect:/index";
         }
-        if(role.equals("ROLE_SELLER")){
-            return "redirect:/seller";
-        }
         model.addAttribute("products", productService.getAllProduct());
+        model.addAttribute("persons", personService.getAllPersons());
+               model.addAttribute("orders", orderService.getAllOrders());
         return "admin/admin";
     }
-    //////////////////////////////////////////ПРОДУКТЫ//////////////////////////////////////////
+
     // Метод по отображению формы добавление
     @GetMapping("/product/add")
     public String addProduct(Model model){
@@ -219,8 +222,6 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    ////////////////////////////////////////ПОЛЬЗОВАТЕЛИ/////////////////////////////////////////////
-
     // Метод возвращает страницу с выводом пользователей и кладет объект пользователя в модель
     @GetMapping("/person")
     public String person(Model model){;
@@ -228,14 +229,12 @@ public class AdminController {
         return "person/person";
     }
 
-
     // Метод возвращает страницу с подробной информацией о пользователе
     @GetMapping("/person/info/{id}")
     public String infoPerson(@PathVariable("id") int id, Model model){
         model.addAttribute("person", personService.getPersonById(id));
         return "person/personInfo";
     }
-
 
     // Метод возвращает страницу с формой редактирования пользователя и помещает в модель объект редактируемого пользователя по id
     @GetMapping("/person/edit/{id}")
@@ -246,45 +245,43 @@ public class AdminController {
 
     // Метод принимает объект с формы и обновляет пользователя
     @PostMapping("/person/edit/{id}")
-    public String editPerson(@ModelAttribute("editPerson") @Valid Person person,BindingResult bindingResult, @PathVariable("id") int id){
+    public String editPerson(@ModelAttribute("editPerson") @Valid Person person, BindingResult bindingResult, @PathVariable("id") int id){
         if(bindingResult.hasErrors()){
             return "person/editPerson";
         }
+
         personService.updatePerson(id, person);
         return "redirect:/admin/person";
     }
 
-
-
-    // Метод по удалению пользователей
-    @GetMapping("/person/delete/{id}")
-    public String deletePerson(@PathVariable("id") int id){
-        personService.deletePerson(id);
-        return "redirect:/admin/person";
-    }
-
-    // Метод по нажатию на кнопку поиска и сортировки и отображение шаблона
-    @GetMapping("/person/sorting_and_searching_and_filters")
-    public String sorting_and_searching_and_filters(){
-        return "/person/SortingAndSearchingAndFilters";
-    }
-
-    @PostMapping("/person/sorting_and_searсhing_and_filters")
-    public String sorting_and_searching_and_filters(@RequestParam("SortingAndSearchingAndFiltersOptions")
-                                                    String sortingAndSearchingAndFiltersOptions, @RequestParam("value") String value, Model model){
-        if(sortingAndSearchingAndFiltersOptions.equals("email")){
-            model.addAttribute("person",personService.getPersonEmail(value));
-        } else if (sortingAndSearchingAndFiltersOptions.equals("phone_number")) {
-            model.addAttribute("person",personService.getPersonPhoneNumber(value));
-        } else if (sortingAndSearchingAndFiltersOptions.equals("last_name_and_sort_birthday")) {
-            model.addAttribute("person",personService.getPersonLastNameOrderByBirthday(value));
-        } else if (sortingAndSearchingAndFiltersOptions.equals("last_name_start")) {
-            model.addAttribute("person",personService.getPersonLastNameStartingWith(value));
-        }
-        return "person/SortingAndSearchingAndFilters";
-    }
-
-
+// Метод возвращает страницу с выводом заказов кладет объект заказов в модель
+@GetMapping("/orders")
+public String order(Model model){;
+    model.addAttribute("orders", orderService.getAllOrders());
+    return "admin/orders";
 }
 
+    //   Метод возвращает страницу с формой редактирования заказ и помещает в модель объект редактируемого заказа по id
+    @GetMapping("/orders/{id}")
+    public String editOrder(@PathVariable("id")int id, Model model){
+        model.addAttribute("info_order", orderService.getOrderById(id));
+        return "/admin/infoOrder";
+    }
+    //
+    // Метод принимает объект с формы и обновляет заказы
+    @PostMapping("/orders/{id}")
+    public String changeStatus(@PathVariable("id") int id, @RequestParam("status") Status status){
+        Order order_status=orderService.getOrderById(id);
+        order_status.setStatus(status);
+        orderService.updateOrderStatus(order_status);
+        return "redirect:/admin/orders/";
+    }
 
+    // Поиск по последним сомволам номера заказа
+    @PostMapping("/orders/search")
+    public String searchOrderByLastSymbols(@RequestParam("value") String value, Model model) {
+        model.addAttribute("search_order",orderRepository.findByNumberEndingWith(value));
+        return "/admin/orders";
+    }
+
+    }

@@ -15,7 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-
+// Основной конфиг для конфигурации безопасности в приложении
 @EnableWebSecurity
 // Cообщает что в приложении доступно разграничение ролей на основе аннотаций
 //@EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -26,7 +26,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //    public SecurityConfig(AuthenticationProvider authenticationProvider) {
 //        this.authenticationProvider = authenticationProvider;
 //    }
-
+@Override
+public void configure(WebSecurity web) throws Exception {
+    web
+            .ignoring()
+            .antMatchers("/resources/**", "/static/**", "/CSS/**", "/JS/**");
+}
     private final PersonDetailsService personDetailsService;
 
     @Autowired
@@ -55,11 +60,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Указываем что /admin доступин пользователю с ролью администратора
 //                .antMatchers("/admin").hasAnyRole("ADMIN")
 //                .antMatchers("/user").hasAnyRole("USER")
+                .antMatchers("/seller").hasAnyRole("SELLER")
                 // Указываем что не аутентифицированные пользователи могут заходить на страницу с формой аутентификации и на объект ошибки
                 // С помощью permitAll указывакем что данные страницы по умолчанию доступны всем пользователям
-                .antMatchers( "/login", "/auth/login", "/error", "/auth/registration", "/product", "/product/info/{id}", "/img/**", "/product/search").permitAll()
-                // Указываем что все остальные страницы доступны пользователю с ролью user и admin продавец и другие
-                .anyRequest().hasAnyRole("USER", "ADMIN", "SELLER")
+                .antMatchers("/auth/login", "/error","/auth/changePassword", "/auth/password/change","/auth/registration", "/product", "/product/info/{id}",
+                        "/img/**", "/product/search").permitAll()
+                // Указываем что все остальные страницы доступны пользователю с ролью user и admin
+                .anyRequest().hasAnyRole("USER", "ADMIN","SELLER")
 //                // Указываем что для всех остальных страниц необходимо вызывать метод authenticated, который открываем форму аутентификации
 //                .anyRequest().authenticated()
                 // Указываем что дальше конфигурироваться будет аутентификация и соединяем аутентификацию с настройкой доступа
@@ -84,10 +91,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web
-                .ignoring()
-                .antMatchers("/resources/**", "/static/**", "/css/**", "/js/**");
-    }
+
 }

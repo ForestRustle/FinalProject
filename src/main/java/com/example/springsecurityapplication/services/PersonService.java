@@ -1,6 +1,8 @@
 package com.example.springsecurityapplication.services;
 
+import com.example.springsecurityapplication.models.Order;
 import com.example.springsecurityapplication.models.Person;
+import com.example.springsecurityapplication.models.Product;
 import com.example.springsecurityapplication.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +19,15 @@ public class PersonService {
 
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
+    public Person getAllPersons(int id, Person person){
+        person.setId(id);
+        personRepository.save(person);
+        return person;
+    }
+
+
+
 
     @Autowired
     public PersonService(PersonRepository personRepository, PasswordEncoder passwordEncoder) {
@@ -24,9 +35,21 @@ public class PersonService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    // Данный метод позволяет вернуть всех пользователей
+    public List<Person> getAllPersons(){
+        return personRepository.findAll();
+    }
+
+    // Данный метод позволяет вернуть пользователей по id
+    public Person getPersonId(int id){
+        Optional<Person> optionalPerson = personRepository.findById(id);
+        return optionalPerson.orElse(null);
+    }
+
+
     public Person getPersonFindByLogin(Person person){
-        Optional<Person> person_db = personRepository.findByLogin(person.getLogin());
-        return person_db.orElse(null);
+        Optional<Person> person_new_pass= personRepository.findByLogin(person.getLogin());
+        return person_new_pass.orElse(null);
     }
 
     @Transactional
@@ -36,10 +59,33 @@ public class PersonService {
         personRepository.save(person);
     }
 
-    // Данный метод позволяет получить всех пользователей
-    public List<Person> getAllPerson(){
-        return personRepository.findAll();
+
+
+//    public void changePassword(int id, String password) {
+//        personRepository.updatePersonById(id,passwordEncoder.encode(password));
+//    }
+
+//    public void changePasswordUser(int id, String password) {
+//        personRepository.updatePersonById(id,passwordEncoder.encode(password));
+//    }
+
+    @Transactional
+    public void changePassword(int id, String password){
+        personRepository.updatePersonById(id, passwordEncoder.encode(password));
     }
+//@Transactional
+//    public Person getAllPersons(){int id, Person person){
+//    person.setId(id);
+//        orderRepository.save(order);
+//    }
+
+//    public void changePassword(int id, String password) {
+//        personRepository.updatePersonById(id,passwordEncoder.encode(password));
+//    }
+// Данный метод позволяет получить всех пользователей
+public List<Person> getAllPerson(){
+    return personRepository.findAll();
+}
 
     // Данный метод позволяет получить пользователя по id
     public Person getPersonById(int id){
@@ -47,18 +93,6 @@ public class PersonService {
         return optionalPerson.orElse(null);
     }
 
-    //    // Данный метод позволяет сохранить пользователя
-//    @Transactional
-//    public void savePerson(Person person){
-//        personRepository.save(person);
-//    }
-//
-//
-// Данный метод позволяет обновить пароль пользователя
-    @Transactional
-    public void updatePassword(int id, String password){
-        personRepository.updatePersonById(id,passwordEncoder.encode(password));
-    }
     // Данный метод позволяет обновить данные пользователя
     @Transactional
     public void updatePerson(int id, Person person){
@@ -73,39 +107,5 @@ public class PersonService {
     }
 
 
-    // Данный метод позволяет получить пользователя по email адресу
-    public Person getPersonEmail(String email){
-        Optional<Person> optionalPersons = personRepository.findByEmail(email);
-        return optionalPersons.orElse(null);
-    }
 
-    // Данный метод позволяет получить пользователя по номеру телефона
-    public Person getPersonPhoneNumber(String phone_number){
-        Optional<Person> optionalPersons = personRepository.findByPhoneNumber(phone_number);
-        return optionalPersons.orElse(null);
-    }
-
-    // Данный метод позволяет получить пользователя по фамилии и отсортировать по возрасту
-    public Person getPersonLastNameOrderByBirthday(String last_name){
-        Optional<Person> optionalPersons = personRepository.findByLastnameOrderByBirthday(last_name);
-        return optionalPersons.orElse(null);
-    }
-
-
-    // Данный метод позволяет получить пользователя по фамилии, где начало равно определенной последовательности
-    public Person getPersonLastNameStartingWith(String starting_with){
-        Optional<Person> optionalPersons = personRepository.findByLastnameStartingWith(starting_with);
-        return optionalPersons.orElse(null);
-    }
-
-
-    public boolean checkIfValidOldPassword(Person person, String oldPassword) {
-
-        return false;
-    }
-
-    public Person changeUserPassword(Person person, String password) {
-        Optional<Person> optionalPersons = personRepository.findByPassword(password);
-        return optionalPersons.orElse(null);
-    }
 }

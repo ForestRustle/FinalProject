@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>Информация о товаре</title>
 </head>
-<body>
+<body style="background: linear-gradient(to bottom, #c4b3ef 0%, #eeb08a 100%)">
+<a style="padding:20px" class="label" href="/auth/login">Назад</a>
 <p th:text="'Наименование: ' + ${product.getTitle()}"></p>
 <p th:text="'Описание: ' + ${product.getDescription()}"></p>
 <p th:text="'Цена: ' + ${product.getPrice()}"></p>

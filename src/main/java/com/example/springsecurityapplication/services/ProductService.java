@@ -1,6 +1,9 @@
 package com.example.springsecurityapplication.services;
 
+import com.example.springsecurityapplication.models.Order;
+import com.example.springsecurityapplication.models.Person;
 import com.example.springsecurityapplication.models.Product;
+import com.example.springsecurityapplication.repositories.PersonRepository;
 import com.example.springsecurityapplication.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,4 +61,9 @@ public class ProductService {
     }
 
 
+//    @Transactional
+//    public Order getAllOrders(int id,Order order) {
+//        order.setId(id);
+//        orderRepository.save(order);
+//    }
 }

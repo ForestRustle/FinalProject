@@ -28,6 +28,9 @@ public class Order {
     @ManyToOne(optional = false)
     private Person person;
 
+//    public Order(String uuid, int count, float price, Status[] values, Product product, Person person) {
+//    }
+
     @PrePersist
     private void init(){
         dateTime = LocalDateTime.now();
@@ -109,4 +112,6 @@ public class Order {
     public Order(){
 
     }
+
+
 }

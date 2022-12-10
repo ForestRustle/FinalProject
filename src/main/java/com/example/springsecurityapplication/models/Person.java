@@ -1,9 +1,10 @@
 package com.example.springsecurityapplication.models;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
-import java.time.LocalDateTime;
-
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.util.List;
 
 @Entity
 @Table(name = "Person")
@@ -26,45 +27,12 @@ public class Person {
     @Column(name = "role")
     private String role;
 
-    @NotEmpty(message = "Фамилия не может быть пустой")
-    @Size(min = 2, max = 30, message = "Фамилия должна быть в диапазоне от 2 до 30 символов")
-    @Column(name = "lastname", length = 30, nullable = false, unique = false, columnDefinition = "text")
-    private String lastname;
+    @ManyToMany()
+    @JoinTable(name = "product_cart", joinColumns = @JoinColumn(name = "person_id"),inverseJoinColumns = @JoinColumn(name = "product_id"))
+    private List<Product> products;
 
-    @NotEmpty(message = "Имя не может быть пустым")
-    @Size(min = 2, max = 30, message = "Имя должно быть в диапазоне от 2 до 30 символов")
-    @Column(name = "firstname", length = 30, nullable = false, unique = false, columnDefinition = "text")
-    private String firstname;
-
-    @Column(name = "patronymic", length = 30, nullable = true, unique = false, columnDefinition = "text")
-    private String patronymic;
-
-    @NotEmpty(message = "Дата рождения не может быть пустой")
-    //@Past(message = "Дата рождения не может быть больше текущей даты")
-    @Pattern(regexp = "(0?[1-9]|[12][0-9]|3[01]).(0?[1-9]|1[012]).((19|20)\\d\\d)", message = "Дата рождения " +
-            "должна быть в формате 01.01.1900")
-    @Column(name = "birthday", length = 10, nullable = false, unique = false, columnDefinition = "text")
-    private String birthday;
-
-    @NotEmpty(message = "Email пользователя не может быть пустым")
-    @Email(message = "Вы ввели не email")
-    @Column(name = "email", length = 40, nullable = false, unique = true, columnDefinition = "text")
-    private String email;
-
-    @NotEmpty(message = "Номер телефона не может быть пустым")
-    @Pattern(regexp = "^((\\+7|7|8)+([0-9]){10})$", message = "Норме телефона должен быть в формате +7/7/89159058431")
-    @Column(name = "phoneNumber", length = 12, nullable = false, unique = true, columnDefinition = "text")
-    private String phoneNumber;
-
-    private LocalDateTime dateTimeOfCreated;
-
-    // Будет заполняться дата и время при создании объекта класса
-    @PrePersist
-    private void init(){
-        dateTimeOfCreated = LocalDateTime.now();
-    }
-
-
+    @OneToMany(mappedBy = "person")
+    private List<Order> orderList;
 
     public int getId() {
         return id;
@@ -90,6 +58,14 @@ public class Person {
         this.password = password;
     }
 
+    public Person() {
+    }
+
+    public Person(String login, String password) {
+        this.login = login;
+        this.password = password;
+    }
+
     public String getRole() {
         return role;
     }
@@ -97,86 +73,4 @@ public class Person {
     public void setRole(String role) {
         this.role = role;
     }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getPatronymic() {
-        return patronymic;
-    }
-
-    public void setPatronymic(String patronymic) {
-        this.patronymic = patronymic;
-    }
-
-    public String getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(String birthday) {
-        this.birthday = birthday;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-
-
-    public Person(String login, String password, String role, String lastname, String firstname,
-                  String patronymic, String birthday, String email, String phoneNumber) {
-
-        this.login = login;
-        this.password = password;
-        this.role = role;
-        this.lastname = lastname;
-        this.firstname = firstname;
-        this.patronymic = patronymic;
-        this.birthday = birthday;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-    }
-
-    public Person() {
-    }
-
-    public LocalDateTime getDateTimeOfCreated() {
-        return dateTimeOfCreated;
-    }
-
-    public void setDateTimeOfCreated(LocalDateTime dateTimeOfCreated) {
-
-        this.dateTimeOfCreated = dateTimeOfCreated;
-    }
-
-
 }
-
-
-
-
